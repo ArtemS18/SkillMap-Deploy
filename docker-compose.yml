@@ -1,0 +1,111 @@
+
+
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/share:/usr/share/nginx/html
+    ports:
+      - 80:80
+    depends_on:
+      - frontend
+      - server
+    networks:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${API_URL}
+    volumes:
+      - ./nginx/share:/app/dist
+    networks:
+      - backend
+    
+    
+  server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "8090:8090"
+    environment:
+      ENV: development
+      POSTGRES_HOST: postgres
+      NEO4J_HOST: neo4j
+      REDIS_HOST: redis
+      POSTGRES_PORT: 5432
+
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+      - backend
+
+  postgres:
+    image: postgres:15.1
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+       - ./postgres_dump:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+    env_file:
+      - .env
+    restart: unless-stopped
+
+
+  neo4j:
+    image: neo4j:latest
+    volumes:
+      - neo4j-logs:/logs
+      - neo4j-config:/config
+      - neo4j-data:/data
+      - neo4j-plugins:/plugins
+      - ./neo4j_dump:/neo4j_dump
+    environment:
+      NEO4J_AUTH: "${NEO4J_USER}/${NEO4J_PASSWORD}"
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_allowlist: "apoc.*"
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    restart: always
+    networks:
+      - backend
+    entrypoint: ["/bin/sh", "/neo4j_dump/import.sh"]
+
+  redis:
+    image: redis:7.4.0
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    networks:
+      - postgres
+      - backend
+
+
+networks:
+  postgres:
+  backend:
+
+volumes:
+    postgres:
+    neo4j-logs:
+    neo4j-config:
+    neo4j-data:
+    neo4j-plugins:
+    redis:
