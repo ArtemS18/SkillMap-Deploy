@@ -11,13 +11,17 @@ jobs:
         steps:
             - name: Checkout repo
               uses: actions/checkout@v4
-            - name: Test SSH
-              run: |
-                echo "$SSH_KEY" > key.pem
-                chmod 600 key.pem
-                ssh -i key.pem -o StrictHostKeyChecking=no -p 22 ${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}} "echo OK"
-              env:
-                SSH_KEY: ${{ secrets.SSH_KEY }}
+            - name: Setup SSH
+              uses: webfactory/ssh-agent@v0.9.0
+              with:
+               ssh-private-key: ${{secrets.VPS_PRIVATE_KEY}}
+            - name: Test
+              run: | 
+                 ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
+                 cd /home/${{secrets.VPS_USERNAME}}/srv
+                 docker compose pull
+                 docker compose up -d --build --remove-orphans
+                 '"
             # - name: Copy on VPS
             #   uses: appleboy/scp-action@v0.1.0
             #   with:
@@ -26,14 +30,14 @@ jobs:
             #     key: ${{secrets.VPS_PRIVATE_KEY}}
             #     source: './*'
             #     target: '/home/user1/srv'
-            - name: Deploy on VPS
-              uses: appleboy/ssh-action@v0.1.0
-              with:
-                host: ${{secrets.VPS_HOST}}
-                username: ${{secrets.VPS_USERNAME}}
-                key: ${{secrets.VPS_PRIVATE_KEY}}
-                script: | 
-                  cd /home/${{secrets.VPS_USERNAME}}/srv
-                  docker compose up -d --build
+            # - name: Deploy on VPS
+            #   uses: appleboy/ssh-action@v0.1.0
+            #   with:
+            #     host: ${{secrets.VPS_HOST}}
+            #     username: ${{secrets.VPS_USERNAME}}
+            #     key: ${{secrets.VPS_PRIVATE_KEY}}
+            #     script: | 
+            #       cd /home/${{secrets.VPS_USERNAME}}/srv
+            #       docker compose up -d --build
 
 
