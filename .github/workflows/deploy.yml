@@ -24,6 +24,7 @@ jobs:
                     git clone https://github.com/ArtemS18/SkillMap-Deploy.git prod
                     git submodule update --init --recursive
                  else
+                    echo "Pull"
                     cd prod
                     git pull
                     git submodule update --recurcive 
