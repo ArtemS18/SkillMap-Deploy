@@ -11,6 +11,13 @@ jobs:
         steps:
             - name: Checkout repo
               uses: actions/checkout@v4
+            - name: Test SSH
+              run: |
+                echo "$SSH_KEY" > key.pem
+                chmod 600 key.pem
+                ssh -i key.pem -o StrictHostKeyChecking=no -p 22 www-data@skillmap.ddns.net "echo OK"
+              env:
+                SSH_KEY: ${{ secrets.SSH_KEY }}
             # - name: Copy on VPS
             #   uses: appleboy/scp-action@v0.1.0
             #   with:
