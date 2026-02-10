@@ -1,0 +1,32 @@
+name: Deploy on server
+
+on:
+    workflow_dispatch:
+    push:
+        branches: [ "main" ]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            - name: Copy on VPS
+              uses: appleboy/scp-action@v0.1.0
+              with:
+                host: ${{secrets.VPS_HOST}}
+                username: ${{secrets.VPS_USERNAME}}
+                key: ${{secrets.VPS_PRIVATE_KEY}}
+                source: './*'
+                target: '/home/${{secrets.VPS_USERNAME}}/srv'
+            - name: Deploy on VPS
+              uses: appleboy/scp-action@v0.1.0
+              with:
+                host: ${{secrets.VPS_HOST}}
+                username: ${{secrets.VPS_USERNAME}}
+                key: ${{secrets.VPS_PRIVATE_KEY}}
+                script: | 
+                  cd /home/${{secrets.VPS_USERNAME}}/srv
+                  docker compose up -d --build
+
+
