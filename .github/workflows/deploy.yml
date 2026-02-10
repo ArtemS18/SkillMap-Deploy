@@ -15,11 +15,17 @@ jobs:
               uses: webfactory/ssh-agent@v0.9.0
               with:
                ssh-private-key: ${{secrets.VPS_PRIVATE_KEY}}
-            - name: Test
+            - name: Add github init
               run: | 
                  ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
                  cd /home/${{secrets.VPS_USERNAME}}/srv
-                 touch hui.txt
+                 if [ ! -f ./.git ]; then
+                    git clone ${{github.repositoryUrl}} .
+                    git submodule update --init --recursive
+                 else
+                    git pull
+                    git submodule update --recurcive 
+                 fi
                  '"
             # - name: Copy on VPS
             #   uses: appleboy/scp-action@v0.1.0
