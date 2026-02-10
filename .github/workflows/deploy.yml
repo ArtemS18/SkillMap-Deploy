@@ -15,7 +15,7 @@ jobs:
               run: |
                 echo "$SSH_KEY" > key.pem
                 chmod 600 key.pem
-                ssh -i key.pem -o StrictHostKeyChecking=no -p 22 www-data@skillmap.ddns.net "echo OK"
+                ssh -i key.pem -o StrictHostKeyChecking=no -p 22 ${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}} "echo OK"
               env:
                 SSH_KEY: ${{ secrets.SSH_KEY }}
             # - name: Copy on VPS
