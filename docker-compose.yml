@@ -85,7 +85,6 @@ services:
     restart: always
     networks:
       - backend
-    entrypoint: ["/bin/sh", "/neo4j_dump/import.sh"]
 
   redis:
     image: redis:7.4.0
