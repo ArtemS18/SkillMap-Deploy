@@ -18,7 +18,7 @@ jobs:
                 username: ${{secrets.VPS_USERNAME}}
                 key: ${{secrets.VPS_PRIVATE_KEY}}
                 source: './*'
-                target: '/home/${{secrets.VPS_USERNAME}}/srv'
+                target: '/home/user1/srv'
             - name: Deploy on VPS
               uses: appleboy/scp-action@v0.1.0
               with:
