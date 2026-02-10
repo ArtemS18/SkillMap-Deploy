@@ -20,7 +20,7 @@ jobs:
                  ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
                  cd /home/${{secrets.VPS_USERNAME}}
                  if [ ! -f ./prod/.git ]; then
-                    git clone ${{github.repositoryUrl}} prod
+                    git clone https://github.com/ArtemS18/SkillMap-Deploy.git prod
                     git submodule update --init --recursive
                  else
                     cd prod
