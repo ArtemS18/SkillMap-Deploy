@@ -21,7 +21,7 @@ jobs:
                  cd /home/${{ secrets.VPS_USERNAME }}/prod
                  PROD_DIR="/home/${{ secrets.VPS_USERNAME }}/prod"
                 
-                 if [ ! -d $PROD_DIR ] || [ ! -d $PROD_DIR/.git ]; then
+                 if [ ! -d "/home/${{ secrets.VPS_USERNAME }}/prod" ] || [ ! -d "/home/${{ secrets.VPS_USERNAME }}/prod/.git" ]; then
                     echo "Cloning fresh repo..."
                     rm -rf ./* ./.[!.]*
                     git clone https://github.com/ArtemS18/SkillMap-Deploy.git .
