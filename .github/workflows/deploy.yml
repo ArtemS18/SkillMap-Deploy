@@ -18,18 +18,16 @@ jobs:
             - name: Add github init
               run: | 
                  ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
-                 cd /home/${{ secrets.VPS_USERNAME }}
+                 cd /home/${{ secrets.VPS_USERNAME }}/prod
                  PROD_DIR="/home/${{ secrets.VPS_USERNAME }}/prod"
                 
                  if [ ! -d "$PROD_DIR" ] || [ ! -f "$PROD_DIR/.git" ]; then
                     echo "Cloning fresh repo..."
                     rm -rf \"$PROD_DIR\"
-                    git clone https://github.com/ArtemS18/SkillMap-Deploy.git prod
-                    cd prod
+                    git clone https://github.com/ArtemS18/SkillMap-Deploy.git .
                     git submodule update --init --recursive
                  else
                     echo "Pulling updates..."
-                    cd "$PROD_DIR"
                     git pull origin main
                     git submodule update --recursive
                  fi
