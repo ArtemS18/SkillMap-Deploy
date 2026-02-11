@@ -21,7 +21,7 @@ jobs:
                  cd /home/${{ secrets.VPS_USERNAME }}/prod
                  PROD_DIR="/home/${{ secrets.VPS_USERNAME }}/prod"
                 
-                 if [ ! -d "/home/${{ secrets.VPS_USERNAME }}/prod" ] || [ ! -d "/home/${{ secrets.VPS_USERNAME }}/prod/.git" ]; then
+                 if [ ! -d $PROD_DIR ] || [ ! -d $PROD_DIR/.git ]; then
                     echo "Cloning fresh repo..."
                     rm -rf ./* ./.[!.]*
                     git clone https://github.com/ArtemS18/SkillMap-Deploy.git .
@@ -35,7 +35,7 @@ jobs:
 
 
 
-
+                 
 
             # - name: Copy on VPS
             #   uses: appleboy/scp-action@v0.1.0
