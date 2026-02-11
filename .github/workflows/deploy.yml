@@ -15,10 +15,12 @@ jobs:
               uses: webfactory/ssh-agent@v0.9.0
               with:
                ssh-private-key: ${{secrets.VPS_PRIVATE_KEY}}
-            - name: Add github init
+            - name: Add github updates
               run: | 
                  ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
-                 cd /home/${{ secrets.VPS_USERNAME }}/prod
+                 cd /home/${{ secrets.VPS_USERNAME }}
+                 mkdir prod -p
+                 cd prod
                  PROD_DIR="/home/${{ secrets.VPS_USERNAME }}/prod"
                 
                  if [ ! -d "/home/${{ secrets.VPS_USERNAME }}/prod" ] || [ ! -d "/home/${{ secrets.VPS_USERNAME }}/prod/.git" ]; then
@@ -32,10 +34,13 @@ jobs:
                     git submodule update --recursive
                  fi
                  '"
-
-
-
-                 
+            - name: Docker pull
+              run: |
+                ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
+                cd /home/${{ secrets.VPS_USERNAME }}/prod
+                docker compose pull
+                docker compose up -d --build --remove-orphans
+                '"
 
             # - name: Copy on VPS
             #   uses: appleboy/scp-action@v0.1.0
