@@ -15,7 +15,7 @@ jobs:
               uses: webfactory/ssh-agent@v0.9.0
               with:
                ssh-private-key: ${{secrets.VPS_PRIVATE_KEY}}
-            - name: Add github updates
+            - name: Init github repo
               run: | 
                  ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
                  cd /home/${{ secrets.VPS_USERNAME }}
