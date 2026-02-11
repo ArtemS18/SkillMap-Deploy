@@ -38,10 +38,10 @@ jobs:
               run: |
                 ssh -o StrictHostKeyChecking=accept-new "${{secrets.VPS_USERNAME}}@${{secrets.VPS_HOST}}" "bash -lc '
                 cd /home/${{ secrets.VPS_USERNAME }}/prod
-                docker compose pull
-                docker compose up -d --build --remove-orphans
+                sudo docker compose pull
+                sudo docker compose up -d --build --remove-orphans
                 '"
-                
+
 
             # - name: Copy on VPS
             #   uses: appleboy/scp-action@v0.1.0
