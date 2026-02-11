@@ -41,24 +41,3 @@ jobs:
                 docker compose pull
                 docker compose up -d --build --remove-orphans
                 '"
-
-
-            # - name: Copy on VPS
-            #   uses: appleboy/scp-action@v0.1.0
-            #   with:
-            #     host: ${{secrets.VPS_HOST}}
-            #     username: ${{secrets.VPS_USERNAME}}
-            #     key: ${{secrets.VPS_PRIVATE_KEY}}
-            #     source: './*'
-            #     target: '/home/user1/srv'
-            # - name: Deploy on VPS
-            #   uses: appleboy/ssh-action@v0.1.0
-            #   with:
-            #     host: ${{secrets.VPS_HOST}}
-            #     username: ${{secrets.VPS_USERNAME}}
-            #     key: ${{secrets.VPS_PRIVATE_KEY}}
-            #     script: | 
-            #       cd /home/${{secrets.VPS_USERNAME}}/srv
-            #       docker compose up -d --build
-
-
