@@ -23,7 +23,7 @@ jobs:
                 
                  if [ ! -d "$PROD_DIR" ] || [ ! -f "$PROD_DIR/.git" ]; then
                     echo "Cloning fresh repo..."
-                    rm -rf \"$PROD_DIR\"
+                    rm * -rf 
                     git clone https://github.com/ArtemS18/SkillMap-Deploy.git .
                     git submodule update --init --recursive
                  else
